@@ -1,5 +1,9 @@
 import dotenv from "dotenv";
 import express from "express";
+import mongoose from "mongoose";
+import authRoutes from "./routes/authRoutes.js";
+import cookieParser from "cookie-parser";
+import { requireAuth } from "./middleware/requireAuth.js";
 
 const app = express();
 
@@ -8,24 +12,25 @@ dotenv.config();
 app.set("view engine", "ejs");
 
 app.use(express.static("public"));
+app.use(express.json());
 
 app.use((req, res, next) => {
   console.log(req.method, req.path);
   next();
 });
 
-app.get("/", (req, res) => {
-  res.status(200).render("home", { title: "REST CRUD API" });
+app.use(authRoutes);
+app.use(cookieParser());
+
+app.get("/", requireAuth, (req, res) => {
+  res.status(200).render("home", { title: "node-jwt-authentication" });
 });
 
-app.get("/login", (req, res) => {
-  res.status(200).render("login", { title: "Login" });
-});
-
-app.get("/signup", (req, res) => {
-  res.status(200).render("signup", { title: "Get started" });
-});
-
-app.listen(process.env.PORT, () => {
-  console.log(`http://localhost:${process.env.PORT}`);
-});
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log(`http://localhost:${process.env.PORT}`);
+    });
+  })
+  .catch((error) => console.log(error));

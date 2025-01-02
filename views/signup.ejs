@@ -1,8 +1,62 @@
 <%- include('partials/header') %>
 
-<header>
-  <h1>Signup Page</h1>
-</header>
+<section class="p-4 sm:w-[360px] sm:mx-auto">
+  <header class="text-center font-semibold text-lg">
+    <h1>Signup Now</h1>
+  </header>
+  <form class="flex flex-col gap-4 bg-[#2b2b2b] p-4 rounded">
+    <label for="email" class="font-semibold text-lg">Email:</label>
+    <input
+      class="p-2 rounded outline-none text-black"
+      placeholder="example@gmail.com"
+      type="text"
+      id="email"
+      name="emial"
+    />
+    <label for="password" class="font-semibold text-lg">Password</label>
+    <input
+      class="p-2 rounded outline-none text-black"
+      placeholder="Example.2022!!"
+      type="password"
+      id="password"
+      name="password"
+    />
+    <button class="bg-[#242424] w-fit mx-auto p-2 font-semibold rounded">
+      Sign Up
+    </button>
+    <div class="error"></div>
+  </form>
+</section>
 
+<script>
+  const form = document.querySelector("form");
+  const error = document.querySelector(".error");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    error.textContent = "";
+    const email = form.email.value;
+    const password = form.password.value;
+
+    try {
+      const res = await fetch("/signup", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await res.json();
+      if (json.error) {
+        error.textContent = json.error
+      }
+      if (json.user) {
+        location.assign("/");
+      }
+    } catch (error) {
+      console.log(error.error);
+    }
+  });
+</script>
 
 <%- include('partials/footer') %>
