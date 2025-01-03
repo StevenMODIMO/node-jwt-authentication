@@ -9,9 +9,13 @@
   <body class="bg-[#242424] text-gray-400">
     <nav>
       <ul class="flex gap-4 p-2 font-semibold">
+        <% if (user) { %>
         <li><a href="/">Home</a></li>
+        <li><a href="/logout">Logout</a></li>
+        <% } else { %>
         <li><a href="/login">LogIn</a></li>
         <li><a href="/signup">SignUp</a></li>
+        <% } %>
       </ul>
     </nav>
   </body>

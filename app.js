@@ -3,7 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
 import cookieParser from "cookie-parser";
-import { requireAuth } from "./middleware/requireAuth.js";
+import { requireAuth, checkUser } from "./middleware/requireAuth.js";
 
 const app = express();
 
@@ -21,6 +21,8 @@ app.use((req, res, next) => {
 
 app.use(authRoutes);
 app.use(cookieParser());
+
+app.get("*", checkUser);
 
 app.get("/", requireAuth, (req, res) => {
   res.status(200).render("home", { title: "node-jwt-authentication" });
